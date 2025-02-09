@@ -6,9 +6,9 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const create = async (body, user) => {
+const create = async (body, token) => {
   const config = {
-    headers: { Authorization: `Bearer ${user.token}` }
+    headers: { Authorization: `Bearer ${token}` }
   }
   const response = await axios.post(baseUrl, body, config)
   return response.data

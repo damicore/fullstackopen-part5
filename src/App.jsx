@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogAdd from './components/BlogAdd'
@@ -12,23 +15,14 @@ const App = () => {
     LoginErr: 'LoginErr'
   }
 
+  const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notifType, setNotiftype] = useState(Notification.NoNotif)
   const [notifMessage, setNotifMessage] = useState('')
   const [newBlogAdded, setNewBlogAdded] = useState(false)
-
-
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [newBlogAdded])
 
   useEffect(() => {
     const loggedUserJSON = JSON.parse(window.localStorage.getItem("loggedAppUser"))
@@ -36,6 +30,15 @@ const App = () => {
       setUser(loggedUserJSON)
     }
   }, [])
+
+  useEffect(() => {
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs)
+    )
+    if (newBlogAdded) {
+      blogFormRef.current.toggleVisibility()
+    }
+  }, [newBlogAdded])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -70,37 +73,6 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("loggedAppUser")
     setUser('')
-  }
-
-  const handleTitleChange = (value) => {
-    setTitle(value)
-  }
-
-  const handleAuthorChange = (value) => {
-    setAuthor(value)
-  }
-
-  const handleURLChange = (value) => {
-    setUrl(value)
-  }
-
-  const handleSubmitBlog = async (e) => {
-    e.preventDefault()
-    try {
-      await blogService.create({ title, author, url }, user)
-      setNotiftype(Notification.BlogAdded)
-      setNewBlogAdded(true)
-      setNotifMessage(`New blog ${title} added.`)
-      setTimeout(() => {
-        setNewBlogAdded(false)
-        setNotiftype(Notification.NoNotif)
-      }, 5000)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    } catch (err) {
-      console.error('Failed to create blog:', err);
-    }
   }
 
   const NotificationComp = () => {
@@ -141,31 +113,34 @@ const App = () => {
   return (
     <div>
       <NotificationComp />
-      {user ? 
-        <div>
-        <h4>hello, {user.username}  
-        <button onClick={handleLogout}>log out</button></h4> 
-        <BlogAdd 
-          title={title}
-          author={author}
-          url={url}
-          handleSubmit={handleSubmitBlog}
-          handleTitleChange={handleTitleChange}
-          handleURLChange={handleURLChange}
-          handleAuthorChange={handleAuthorChange}
-        />
-        <h2>Blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />)}
-        </div>
-      : 
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          onUsernameChange={onUsernameChange}
-          onPasswordChange={onPasswordChange}
-        />
+      {
+        user ?
+          <div>
+            <h4>hello, {user.username}
+              <button onClick={handleLogout}>log out</button></h4>
+            <Togglable buttonLabel='new blog' ref={blogFormRef}>
+              <BlogAdd 
+                setNewBlogAdded={setNewBlogAdded} 
+                token={user.token}
+                setNotiftype={setNotiftype}
+                setNotifMessage={setNotifMessage}
+              />
+            </Togglable>
+            <h2>Blogs</h2>
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} />)}
+          </div>
+          :
+          <Togglable buttonLabel='login'>
+            <LoginForm
+              handleLogin={handleLogin}
+              username={username}
+              password={password}
+              onUsernameChange={onUsernameChange}
+              onPasswordChange={onPasswordChange}
+            />
+          </Togglable>
+          // loginForm()
       }
     </div>
   )
