@@ -16,7 +16,6 @@ const App = () => {
   }
 
   const blogFormRef = useRef()
-  const blogRef = useRef()
 
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -152,7 +151,6 @@ const App = () => {
                 key={blog.id}
                 blog={blog}
                 likeOnClick={() => likeOnClick(blog)}
-                ref={blogRef}
               />
             )}
           </div>

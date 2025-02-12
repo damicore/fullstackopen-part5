@@ -1,7 +1,6 @@
-import { useEffect, useState, forwardRef, useImperativeHandle } from "react"
-import blogService from "../services/blogs"
+import { useState } from "react"
 
-const Blog = forwardRef(({ blog, likeOnClick }, ref) => {
+const Blog = ({ blog, likeOnClick }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -32,6 +31,6 @@ const Blog = forwardRef(({ blog, likeOnClick }, ref) => {
       </div>
     </div >
   )
-})
+}
 
 export default Blog
