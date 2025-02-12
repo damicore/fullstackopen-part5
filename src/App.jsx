@@ -10,7 +10,7 @@ import BlogAdd from './components/BlogAdd'
 
 const App = () => {
   const Notification = {
-    NoNotif: 'NoNotif', 
+    NoNotif: 'NoNotif',
     BlogAdded: 'BlogAdded',
     LoginErr: 'LoginErr'
   }
@@ -91,12 +91,12 @@ const App = () => {
         show = true
         color = "red"
         break;
-      default: 
+      default:
         show = false
         break;
     }
 
-    return show? (
+    return show ? (
       <div style={{
         color: color,
         background: "grey",
@@ -105,7 +105,7 @@ const App = () => {
         marginBottom: "10px",
         textAlign: "center"
       }}>
-      {notifMessage}
+        {notifMessage}
       </div>
     ) : null
   }
@@ -119,8 +119,8 @@ const App = () => {
             <h4>hello, {user.username}
               <button onClick={handleLogout}>log out</button></h4>
             <Togglable buttonLabel='new blog' ref={blogFormRef}>
-              <BlogAdd 
-                setNewBlogAdded={setNewBlogAdded} 
+              <BlogAdd
+                setNewBlogAdded={setNewBlogAdded}
                 token={user.token}
                 setNotiftype={setNotiftype}
                 setNotifMessage={setNotifMessage}
@@ -140,7 +140,6 @@ const App = () => {
               onPasswordChange={onPasswordChange}
             />
           </Togglable>
-          // loginForm()
       }
     </div>
   )

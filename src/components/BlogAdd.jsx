@@ -1,7 +1,12 @@
 import { useState } from "react"
 import blogService from "../services/blogs"
 
-const BlogAdd = ({ setNewBlogAdded, token, setNotiftype, setNotifMessage }) => {
+const BlogAdd = ({ 
+  setNewBlogAdded, 
+  token, 
+  setNotiftype, 
+  setNotifMessage 
+}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setURL] = useState('')
@@ -21,7 +26,6 @@ const BlogAdd = ({ setNewBlogAdded, token, setNotiftype, setNotifMessage }) => {
       setAuthor('')
       setURL('')
     } catch (err) {
-      console.error('Failed to create blog:', err)
       setNotifMessage('Failed to create blog')
       setNotiftype('LoginErr')
     }
