@@ -129,6 +129,21 @@ const App = () => {
     }
   }
 
+  const onDelete = async ({ id, title, author }) => {
+    if (window.confirm(`Remove blog ${title} by ${author}`)) {
+      try {
+        await blogService.remove(id, user.token)
+        setBlogs(
+          blogs.filter(
+            (b) => {
+              return b.id !== id
+            }))
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   return (
     <div>
       <NotificationComp />
@@ -146,11 +161,14 @@ const App = () => {
               />
             </Togglable>
             <h2>Blogs</h2>
-            {blogs.map(blog =>
+            {blogs
+            .sort((a, b) =>  a.likes - b.likes )
+            .map(blog =>
               <Blog
                 key={blog.id}
                 blog={blog}
-                likeOnClick={() => likeOnClick(blog)}
+                likeOnClick={ () => likeOnClick(blog) }
+                onDelete={ () => onDelete(blog) }
               />
             )}
           </div>
